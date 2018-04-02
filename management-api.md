@@ -29,6 +29,9 @@ Example Response from your management API:
       "endpoint": "https://my-endpoint.example.com",
       "config": {
         "setting": "value"
+      },
+      "env": {
+        "ENV_VARIABLE": "value"
       }
     }
 
