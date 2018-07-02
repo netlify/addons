@@ -32,6 +32,13 @@ Example Response from your management API:
       },
       "env": {
         "ENV_VARIABLE": "value"
+      },
+      "snippets": {
+        "app-snippet", {
+           "title": "Snippet From Demo App", 
+           "position": "head",
+           "html": "<script>console.log('Hello from App')</script>"
+        }
       }
     }
 
