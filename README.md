@@ -318,7 +318,7 @@ netlify addons:create your-name-space
 
 We have created a couple example implementations of how an add-on REST API should work.
 
-- [An express app running on Heroku](./express) [code](https://github.com/netlify/addon-integration-examples/blob/master/express/index.js)
-- [A REST API running on AWS Lambda + APIGateway](./serverless) [code](https://github.com/netlify/addon-integration-examples/blob/master/serverless/handler.js)
+- [An express app running on Heroku](./examples/express) [code](https://github.com/netlify/netlify-addons/blob/master/examples/express/index.js)
+- [A REST API running on AWS Lambda + APIGateway](./examples/serverless) [code]https://github.com/netlify/netlify-addons/blob/master/examples/serverless/handler.js)
 
 Please let us know if you have any questions on how these work! Open an issue in this repo or ping us directly on slack.
