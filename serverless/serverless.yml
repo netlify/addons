@@ -1,0 +1,130 @@
+
+service: netlify-addon-example
+
+custom:
+  # default prod stage
+  stage: ${opt:stage, 'prod'}
+  # default region
+  region: ${opt:region, 'us-west-1'}
+  # integrations table name
+  tableName: 'netlify-addon-instances-table-${self:custom.stage}'
+
+  # For custom domains
+  domainName: your-route53-url.com
+  # api base name api.com/{servicePath}
+  servicePath: 'netlify-addons-example'
+  # api.your-route53-url.com.com/netlify-addons-example/
+  domains:
+    prod:    api.${self:custom.domainName}
+    staging: api-staging.${self:custom.domainName}
+    dev:     api-dev.${self:custom.domainName}
+  # settings for serverless-domain-manager
+  customDomain:
+    # api.netlify-services.com/users
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    basePath: ${self:custom.servicePath}
+    createRoute53Record: true
+
+plugins:
+  - serverless-domain-manager
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: ${self:custom.stage}
+  region: ${self:custom.region}
+  # Env vars for lambda functions
+  environment:
+    ADDON_TABLE_NAME: ${self:custom.tableName}
+    NETLIFY_SECRET: ${file(./config.json):NETLIFY_SECRET}
+    CREDENTIALS_API_URL: https://${self:custom.customDomain.domainName}/${self:custom.customDomain.basePath}/get-credentials
+  # add permissions
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${self:custom.region}:*:table/${self:custom.tableName}"
+
+functions:
+  # This is the proxied function from `/.netlify/cms-media-manager`
+  customFunctionality:
+    handler: handler.getCredentials
+    events:
+      - http:
+          path: custom
+          method: any
+          cors: true
+      - http:
+          path: custom/{id}
+          method: any
+          cors: true
+
+  #############################
+  # Netlify Addon Rest endpoints:
+  #
+  # The functions below here are the REST endpoints needed for a Netlify Addon provider
+  #############################
+
+  # returns the manifest for the API
+  getManifest:
+    handler: handler.getManifest
+    events:
+      - http:
+          path: /
+          method: get
+          cors: true
+  # create a new instance of your microservice
+  createInstance:
+    handler: handler.create
+    events:
+      - http:
+          path: instances
+          method: post
+          cors: true
+  # get the current configuration of an instance
+  readInstance:
+    handler: handler.read
+    events:
+      - http:
+          path: instances/{id}
+          method: get
+          cors: true
+  # update the configuration of an instance
+  updateInstance:
+    handler: handler.update
+    events:
+      - http:
+          path: instances/{id}
+          method: put
+          cors: true
+  # delete an instance
+  deleteInstance:
+    handler: handler.delete
+    events:
+      - http:
+          path: instances/{id}
+          method: delete
+          cors: true
+
+# Add Dynamo Table
+resources:
+  Resources:
+    NetlifyIntegrationExample:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}

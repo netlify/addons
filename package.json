@@ -1,0 +1,23 @@
+{
+  "name": "example-netlify-addon-implementations",
+  "version": "1.0.0",
+  "description": "A Netlify addon is a way for Netlify users to extend their site functionality.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "md-magic --path '**/*.md' --ignore 'node_modules'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netlify/addon-integration-examples.git"
+  },
+  "author": "David Wells",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/netlify/addon-integration-examples/issues"
+  },
+  "homepage": "https://github.com/netlify/addon-integration-examples#readme",
+  "devDependencies": {
+    "markdown-magic": "^0.1.25"
+  }
+}
