@@ -34,7 +34,7 @@ Each netlify add-on service must offer a [management API](#creating-your-add-on-
 
 This is a diagram of how Netlify provisions your add-on service.
 
-<img width="100%" alt="provisioning flow for repo" src="https://user-images.githubusercontent.com/532272/45330942-c4c8b600-b51c-11e8-90a4-b70cd39e4e21.png">
+<img width="100%" alt="provisioning flow for repo" src="https://user-images.githubusercontent.com/532272/45775428-93c74000-bc04-11e8-9a27-084170353563.png">
 
 
 ## Creating Your Add-on API
