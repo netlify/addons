@@ -1,0 +1,8 @@
+{
+  "name": "Netlify Addon Provider via Express",
+  "description": "example integration with express",
+  "repository": "https://github.com/netlify/addon-integration-examples",
+  "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
+  "keywords": ["node", "express"],
+  "image": "heroku/nodejs"
+}

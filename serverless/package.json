@@ -1,0 +1,19 @@
+{
+  "name": "netlify-addon-cms-media-manager",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "deploy": "sls deploy"
+  },
+  "author": "David Wells",
+  "license": "MIT",
+  "dependencies": {
+    "hasha": "^3.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "uuid": "^3.2.1"
+  },
+  "devDependencies": {
+    "serverless": "^1.29.2",
+    "serverless-domain-manager": "^2.4.0"
+  }
+}
