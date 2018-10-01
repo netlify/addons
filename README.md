@@ -51,7 +51,7 @@ DELETE  /instances/:id  # delete an instance
 
 ### Create an Add-on Instance
 
-When a customer adds an instance of your service to a site, Netlify will `POST` to `your-management-api.com/instances` on your management API with a JSON body.
+When a customer adds an instance of your add-on to a site, Netlify will `POST` to `your-management-api.com/instances/`
 
 A Netlify user can add an instance of your service by running:
 
@@ -59,9 +59,9 @@ A Netlify user can add an instance of your service by running:
 netlify addons:create your-addon-namespace --valueOne xyz --otherConfigValue abc
 ```
 
-That kicks off the following flow
+That kicks off the following flow:
 
-1. The request from Netlify to your service occurs
+1. **The `POST` request from Netlify to your service occurs**
 
     Here is an example request body **to your management endpoint**:
 
@@ -96,7 +96,7 @@ That kicks off the following flow
 
     You will want to take this data, provision your application resources and return a response.
 
-2. Return a `201` response from your service back to Netlify
+2. **Return a `201` response from your service back to Netlify**
 
     ```js
     {
@@ -138,7 +138,7 @@ This is achieved by the Netlify user running:
 netlify addons:update your-addon-namespace --valueOne xyz --otherConfigValue abc
 ```
 
-1. The `PUT` request from Netlify to your service `/instances/${id}` occurs
+1. **The `PUT` request from Netlify to your service `/instances/${id}` occurs**
 
     The ID of the service instance is included in the path parameters. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
 
@@ -154,7 +154,7 @@ netlify addons:update your-addon-namespace --valueOne xyz --otherConfigValue abc
 
     Run your services update logic here and then return any updated values back to the Netlify site.
 
-2. Return a `200` response from your service back to Netlify
+2. **Return a `200` response from your service back to Netlify**
 
     Return any updated values from the users request
 
@@ -177,19 +177,23 @@ netlify addons:update your-addon-namespace --valueOne xyz --otherConfigValue abc
 
 ### Deleting an Add-on Instance
 
-Netlify users delete your service instance like so:
+When a Netlify user removes your add-on, Netlify sends a `DELETE` request to your service to handle deprovisioning.
+
+Users can remove add-ons like so:
 
 ```bash
 netlify addons:delete your-addon-namespace
 ```
 
-1. The `DELETE` request from Netlify to your service `/instances/${id}` occurs
+When this happens, the following occurs:
+
+1. **Netlify sends a `DELETE` request from to your service `/instances/${id}`**
 
     This request has no body but includes the `id` of the instance. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
 
     Run your deletion logic and optionally return data back to the client (CLI)
 
-2. Return a `204` response from your service back to Netlify to verify the deletion was successful
+2. **Return a `204` response from your service back to Netlify to verify the deletion was successful**
 
 ### Getting an Add-on Instance
 
@@ -201,13 +205,13 @@ netlify addons:list
 
 To implement this endpoint
 
-1. The `GET` request from Netlify to your service `/instances/${id}` occurs
+1. **The `GET` request from Netlify to your service `/instances/${id}` occurs**
 
     This request has no body but includes the `id` of the instance.
 
     Run your logic to fetch details about your instance and return them back to the CLI
 
-2. Return a `200` response from your service back to Netlify
+2. **Return a `200` response from your service back to Netlify**
 
     ```
     {
@@ -313,6 +317,8 @@ After your namespace is setup in Netlify, you will be able to run CLI command to
 ```bash
 netlify addons:create your-name-space
 ```
+
+It’s common for add-on partners to create a `-staging` version of their add-on to test new features, like `your-addon-namespace-staging`. This gives a safe place for us to test and update changes to an addon before shipping updates to the master `your-addon-namespace` that is live for all Netlify users.
 
 ## Example Implementations
 
