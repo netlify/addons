@@ -85,7 +85,9 @@ That kicks off the following flow:
         service_id: 'express-example',
         service_instance: {
           config: { name: 'woooooo' }
-        }
+        },
+        // If your add-on needs to trigger site rebuilds we will send a build hook
+        incoming_hook_url: 'https://api.netlify.com/build_hooks/123xyz' } }
       }
     }
     ```
