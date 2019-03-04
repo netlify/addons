@@ -12,12 +12,13 @@ A Netlify add-on is a way for Netlify users to extend their site functionality.
 ## Table of Contents
 <!-- AUTO-GENERATED-CONTENT:START (TOC) -->
 - [Getting Started](#getting-started)
-- [The Add-on Provisioning Flow](#the-add-on-provisioning-flow)
-- [Creating Your Add-on API](#creating-your-add-on-api)
-  * [Create an Add-on Instance](#create-an-add-on-instance)
-  * [Updating an Add-on Instance](#updating-an-add-on-instance)
-  * [Deleting an Add-on Instance](#deleting-an-add-on-instance)
-  * [Getting an Add-on Instance](#getting-an-add-on-instance)
+- [Add-on Provisioning Flow](#add-on-provisioning-flow)
+- [Add-on API](#add-on-api)
+  * [`GET /manifest` - Manifest Endpoint](#get-manifest---manifest-endpoint)
+  * [`POST /instances` - Create Add-on Instance](#post-instances---create-add-on-instance)
+  * [`PUT /instances/:id` - Updating Add-on Instance](#put-instancesid---updating-add-on-instance)
+  * [`DELETE /instances/:id` - Deleting Add-on Instance](#delete-instancesid---deleting-add-on-instance)
+  * [`GET /instances/:id` - Getting Add-on Instance](#get-instancesid---getting-add-on-instance)
 - [Proxied URLs](#proxied-urls)
   * [Request Headers](#request-headers)
   * [Verification with JWS](#verification-with-jws)
@@ -30,14 +31,14 @@ A Netlify add-on is a way for Netlify users to extend their site functionality.
 
 Each netlify add-on service must offer a [management API](#creating-your-add-on-api) that Netlify will use to provision the service for new projects, manage configuration settings and update the plans for your service.
 
-## The Add-on Provisioning Flow
+## Add-on Provisioning Flow
 
 This is a diagram of how Netlify provisions your add-on service.
 
 <img width="100%" alt="provisioning flow for repo" src="https://user-images.githubusercontent.com/532272/45775428-93c74000-bc04-11e8-9a27-084170353563.png">
 
 
-## Creating Your Add-on API
+## Add-on API
 
 In order for Netlify customers to create and manage their own instances of your service, you'll need to create a management API that exposes the following endpoints:
 
@@ -49,7 +50,7 @@ PUT     /instances/:id  # update the configuration of an instance
 DELETE  /instances/:id  # delete an instance
 ```
 
-### Manifest Endpoint
+### `GET /manifest` - Manifest Endpoint
 
 The manifest endpoint of a Netlify add-on is used to return information about your service to the Netlify user.
 
@@ -57,6 +58,7 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 
 - `name` - The name of your add-on
 - `description` - A brief description of your add-on
+- `admin_url` - URL used for SSO when netlify users run `netlify addons:auth addonname`
 - `config` - The inputs required from the user for the add-on to provision itself.
 
 **Example response**
@@ -91,7 +93,7 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 }
 ```
 
-### Create an Add-on Instance
+### `POST /instances` - Create Add-on Instance
 
 When a customer adds an instance of your add-on to a site, Netlify will `POST` to `your-management-api.com/instances/`
 
@@ -171,7 +173,7 @@ That kicks off the following flow:
 
     Though not implemented yet, we plan to include a `state` field, which will allow your service to handle async provisioning, in case it takes some amount of time to activate the new service.
 
-### Updating an Add-on Instance
+### `PUT /instances/:id` - Updating Add-on Instance
 
 You can allow Netlify users to update your service instance.
 
@@ -222,7 +224,7 @@ netlify addons:config your-addon-namespace --valueOne xyz --otherConfigValue abc
     }
     ```
 
-### Deleting an Add-on Instance
+### `DELETE /instances/:id` - Deleting Add-on Instance
 
 When a Netlify user removes your add-on, Netlify sends a `DELETE` request to your service to handle deprovisioning.
 
@@ -242,7 +244,7 @@ When this happens, the following occurs:
 
 2. **Return a `204` response from your service back to Netlify to verify the deletion was successful**
 
-### Getting an Add-on Instance
+### `GET /instances/:id` - Getting Add-on Instance
 
 Netlify users get information about your service instance like so:
 
