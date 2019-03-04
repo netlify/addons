@@ -69,6 +69,12 @@ DELETE  /instances/:id  # delete an instance
 
 The manifest endpoint of a Netlify add-on is used to return information about your service to the Netlify user.
 
+#### Payload from Netlify
+
+The body of the payload from Netlify is empty.
+
+#### Response to Netlify
+
 **The manifest includes:**
 
 - `name` (required) - The name of your add-on
@@ -76,11 +82,7 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 - `admin_url` (optional) - URL used for SSO when netlify users run `netlify addons:auth addonname`
 - `config` (optional) - The inputs required from the user for the add-on to provision itself.
 
-#### Payload from Netlify
-
-The body of the payload from Netlify is empty.
-
-#### Response to Netlify
+**Here is an example response to Netlify:**
 
 ```js
 {
@@ -113,6 +115,8 @@ The body of the payload from Netlify is empty.
   })
 }
 ```
+
+Manifest values are cached by Netlify for 24 hours.
 
 ### `POST /instances` - Create Add-on Instance
 
