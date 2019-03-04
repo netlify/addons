@@ -65,28 +65,28 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 {
   statusCode: 200,
   body: JSON.stringify({
-  	name: "My Awesome Integration",
-		description: "This addon does XYZ.",
+    name: "My Awesome Integration",
+    description: "This addon does XYZ.",
     admin_url: 'https://your-admin-url.com',
     config: {
-	    "optionOne": {
-	      // An alternate, human-friendly name.
-	      "displayName": "Twilio Account SID",
-	      // Type of field
-	      "type": "string",
-	      // If is required or not
-	      "required": true,
-	    },
-	    "optionTwo": {
-	      "displayName": "Twilio Account Authentication Token",
-	      "type": "string"
-	    },
-	    "fooBarZaz": {
-	      "displayName": "Twilio Account Phone number(s)",
-	      "description": "Number(s) required for service to function",
-	      "type": "string",
-	    },
-	  },
+      "optionOne": {
+        // An alternate, human-friendly name.
+        "displayName": "Twilio Account SID",
+        // Type of field
+        "type": "string",
+        // If is required or not
+        "required": true,
+      },
+      "optionTwo": {
+        "displayName": "Twilio Account Authentication Token",
+        "type": "string"
+      },
+      "fooBarZaz": {
+        "displayName": "Twilio Account Phone number(s)",
+        "description": "Number(s) required for service to function",
+        "type": "string",
+      },
+    },
   })
 }
 ```
