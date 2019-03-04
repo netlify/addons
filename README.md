@@ -49,6 +49,48 @@ PUT     /instances/:id  # update the configuration of an instance
 DELETE  /instances/:id  # delete an instance
 ```
 
+### Manifest Endpoint
+
+The manifest endpoint of a Netlify add-on is used to return information about your service to the Netlify user.
+
+**The manifest includes:**
+
+`name` - The name of your add-on
+`description` - A brief description of your add-on
+`config` - The inputs required from the user for the add-on to provision itself.
+
+**Example response**
+
+```js
+{
+  statusCode: 200,
+  body: JSON.stringify({
+  	name: "My Awesome Integration",
+		description: "This addon does XYZ.",
+    admin_url: 'https://your-admin-url.com',
+    config: {
+	    "optionOne": {
+	      // An alternate, human-friendly name.
+	      "displayName": "Twilio Account SID",
+	      // Type of field
+	      "type": "string",
+	      // If is required or not
+	      "required": true,
+	    },
+	    "optionTwo": {
+	      "displayName": "Twilio Account Authentication Token",
+	      "type": "string"
+	    },
+	    "fooBarZaz": {
+	      "displayName": "Twilio Account Phone number(s)",
+	      "description": "Number(s) required for service to function",
+	      "type": "string",
+	    },
+	  },
+  })
+}
+```
+
 ### Create an Add-on Instance
 
 When a customer adds an instance of your add-on to a site, Netlify will `POST` to `your-management-api.com/instances/`
@@ -136,7 +178,11 @@ You can allow Netlify users to update your service instance.
 This is achieved by the Netlify user running:
 
 ```bash
-netlify addons:update your-addon-namespace --valueOne xyz --otherConfigValue abc
+# Option 1. Run through configuration prompts from the /manifest endpoint
+netlify addons:config your-addon-namespace
+
+# Option 2. Run command with values for no prompts
+netlify addons:config your-addon-namespace --valueOne xyz --otherConfigValue abc
 ```
 
 1. **The `PUT` request from Netlify to your service `/instances/${id}` occurs**
