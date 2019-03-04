@@ -55,9 +55,9 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 
 **The manifest includes:**
 
-`name` - The name of your add-on
-`description` - A brief description of your add-on
-`config` - The inputs required from the user for the add-on to provision itself.
+- `name` - The name of your add-on
+- `description` - A brief description of your add-on
+- `config` - The inputs required from the user for the add-on to provision itself.
 
 **Example response**
 
