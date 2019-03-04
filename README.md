@@ -10,30 +10,45 @@ A Netlify add-on is a way for Netlify users to extend their site functionality.
 - ...
 
 ## Table of Contents
-<!-- AUTO-GENERATED-CONTENT:START (TOC) -->
+<!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click to expand) -->
+<details>
+<summary>Click to expand</summary>
+
 - [Getting Started](#getting-started)
 - [Add-on Provisioning Flow](#add-on-provisioning-flow)
 - [Add-on API](#add-on-api)
   * [`GET /manifest` - Manifest Endpoint](#get-manifest---manifest-endpoint)
+    + [Payload from Netlify](#payload-from-netlify)
+    + [Response to Netlify](#response-to-netlify)
   * [`POST /instances` - Create Add-on Instance](#post-instances---create-add-on-instance)
+    + [Payload from Netlify](#payload-from-netlify-1)
+    + [Response to Netlify](#response-to-netlify-1)
   * [`PUT /instances/:id` - Updating Add-on Instance](#put-instancesid---updating-add-on-instance)
+    + [Payload from Netlify](#payload-from-netlify-2)
+    + [Response to Netlify](#response-to-netlify-2)
   * [`DELETE /instances/:id` - Deleting Add-on Instance](#delete-instancesid---deleting-add-on-instance)
+    + [Payload from Netlify](#payload-from-netlify-3)
+    + [Response to Netlify](#response-to-netlify-3)
   * [`GET /instances/:id` - Getting Add-on Instance](#get-instancesid---getting-add-on-instance)
+    + [Payload from Netlify](#payload-from-netlify-4)
+    + [Response to Netlify](#response-to-netlify-4)
 - [Proxied URLs](#proxied-urls)
   * [Request Headers](#request-headers)
   * [Verification with JWS](#verification-with-jws)
   * [User-Level Authentication with JWTs](#user-level-authentication-with-jwts)
 - [Registering your add-on](#registering-your-add-on)
 - [Example Implementations](#example-implementations)
+
+</details>
 <!-- AUTO-GENERATED-CONTENT:END -->
 
 ## Getting Started
 
-Each netlify add-on service must offer a [management API](#creating-your-add-on-api) that Netlify will use to provision the service for new projects, manage configuration settings and update the plans for your service.
+Each netlify add-on service must offer a [management API](#add-on-api) that Netlify will use to provision the third party service for new Netlify sites.
+
+The management API also allows for Netlify to manage configuration settings and update the plans for your third party service.
 
 ## Add-on Provisioning Flow
-
-This is a diagram of how Netlify provisions your add-on service.
 
 <img width="100%" alt="provisioning flow for repo" src="https://user-images.githubusercontent.com/532272/45775428-93c74000-bc04-11e8-9a27-084170353563.png">
 
@@ -43,7 +58,7 @@ This is a diagram of how Netlify provisions your add-on service.
 In order for Netlify customers to create and manage their own instances of your service, you'll need to create a management API that exposes the following endpoints:
 
 ```
-GET     /manifest       # returns the manifest for the API
+GET     /manifest       # returns the manifest & configuration details for your service
 POST    /instances      # create a new instance of your service
 GET     /instances/:id  # get the current configuration of an instance
 PUT     /instances/:id  # update the configuration of an instance
@@ -56,12 +71,16 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
 
 **The manifest includes:**
 
-- `name` - The name of your add-on
-- `description` - A brief description of your add-on
-- `admin_url` - URL used for SSO when netlify users run `netlify addons:auth addonname`
-- `config` - The inputs required from the user for the add-on to provision itself.
+- `name` (required) - The name of your add-on
+- `description` (required) - A brief description of your add-on
+- `admin_url` (optional) - URL used for SSO when netlify users run `netlify addons:auth addonname`
+- `config` (optional) - The inputs required from the user for the add-on to provision itself.
 
-**Example response**
+#### Payload from Netlify
+
+The body of the payload from Netlify is empty.
+
+#### Response to Netlify
 
 ```js
 {
@@ -72,20 +91,22 @@ The manifest endpoint of a Netlify add-on is used to return information about yo
     admin_url: 'https://your-admin-url.com',
     config: {
       "optionOne": {
-        // An alternate, human-friendly name.
-        "displayName": "Twilio Account SID",
-        // Type of field
-        "type": "string",
-        // If is required or not
-        "required": true,
+        /* An alternate, human-friendly name. */
+        "displayName": "Human friendly name",
+        /*  Description of option shown to user  */
+        "description": "This option does xyz. For more info see the docs http://docs.com/link",
+        /*  Type of field
+        "type": "string",  */
+        /*  If is required or not
+        "required": true,  */
       },
       "optionTwo": {
-        "displayName": "Twilio Account Authentication Token",
+        "displayName": "Second Human friendly name",
         "type": "string"
       },
       "fooBarZaz": {
-        "displayName": "Twilio Account Phone number(s)",
-        "description": "Number(s) required for service to function",
+        "displayName": "Third Human friendly name",
+        "description": "This option does xyz. For more info see the docs http://docs.com/link",
         "type": "string",
       },
     },
@@ -105,73 +126,77 @@ netlify addons:create your-addon-namespace --valueOne xyz --otherConfigValue abc
 
 That kicks off the following flow:
 
-1. **The `POST` request from Netlify to your service occurs**
+#### Payload from Netlify
 
-    Here is an example request body **to your management endpoint**:
+**The `POST` request from Netlify to your service occurs**
 
-    ```js
+Here is an example request body **to your management endpoint**:
+
+```js
+{
+  // Unique ID generated by Netlify
+  uuid: '2e65dd70-523d-48d8-8826-a93229d7ec01',
+  account: '5902622bcf321c7359e97e52',
+  config: {
+    site_url: 'https://calling-site-from-netlify.netlify.com',
+    jwt: {
+      secret: 'xyz-netlify-secret'
+    },
+    // User defined configuration values
+    config: {
+      name: 'woooooo'
+    },
+    // Netlify Site id
+    site_id: '2e65dd70-523d-48d8-8826-a93229d7ec01',
+    // Your service ID slug
+    service_id: 'express-example',
+    service_instance: {
+      config: { name: 'woooooo' }
+    },
+    // If your add-on needs to trigger site rebuilds we will send a build hook
+    incoming_hook_url: 'https://api.netlify.com/build_hooks/123xyz' } }
+  }
+}
+```
+
+- `uuid`: Unique ID generated by Netlify.
+- `config`: Fields and values you need for configuring your service for a customer.
+
+You will want to take this data, provision your application resources and return a response.
+
+#### Response to Netlify
+
+**Return a `201` response from your service back to Netlify**
+
+```js
+{
+  // `id` (required) - A unique ID generated by you, for reference within your own API
+  id: uuid(),
+  // `endpoint` (optional) - Proxied endpoint.
+  // This will be callable at https://user-netlify-site.com/.netlify/your-addon-namespace
+  endpoint: "https://my-endpoint.example.com",
+  /* `config` (optional) - This can return back exactly what was received in the POST request, or include additional fields or altered values. This should also be what is returned in response to a GET request to /instances/:id */
+  config: {},
+  // `env` (optional) - Environment Keys accessible by Netlify user in build context & in functions
+  env: {
+    'YOUR_SERVICE_API_SECRET': 'value'
+  },
+  // `snippets` (optional) - JS Snippet content to inject into the calling Netlify site
+  snippets: [
     {
-      // Unique ID generated by Netlify
-      uuid: '2e65dd70-523d-48d8-8826-a93229d7ec01',
-      account: '5902622bcf321c7359e97e52',
-      config: {
-        site_url: 'https://calling-site-from-netlify.netlify.com',
-        jwt: {
-          secret: 'xyz-netlify-secret'
-        },
-        // User defined configuration values
-        config: {
-          name: 'woooooo'
-        },
-        // Netlify Site id
-        site_id: '2e65dd70-523d-48d8-8826-a93229d7ec01',
-        // Your service ID slug
-        service_id: 'express-example',
-        service_instance: {
-          config: { name: 'woooooo' }
-        },
-        // If your add-on needs to trigger site rebuilds we will send a build hook
-        incoming_hook_url: 'https://api.netlify.com/build_hooks/123xyz' } }
-      }
+      title: 'Snippet From Demo App',
+      position: 'head',
+      html: `<script>console.log("Hello from ${logValue}")</script>`
     }
-    ```
+  ]
+}
+```
 
-    - `uuid`: Unique ID generated by Netlify.
-    - `config`: Fields and values you need for configuring your service for a customer.
+- `id` A unique ID generated by you, for reference within your own API. Any string is valid for our purposes. This will be included in the headers and JWS for all API calls from Netlify. This `id` is also what is used in all subsequent `instances/${id}` update/get/delete calls to your remote API.
+- `env`: Set Environment variable for the Netlify user to access during site build or inside of their Netlify functions context.
+- `snippets`: Inject javascript snippets into the header or footer of the calling Netlify Site.
 
-    You will want to take this data, provision your application resources and return a response.
-
-2. **Return a `201` response from your service back to Netlify**
-
-    ```js
-    {
-      // `id` (required) - A unique ID generated by you, for reference within your own API
-      id: uuid(),
-      // `endpoint` (optional) - Proxied endpoint.
-      // This will be callable at https://user-netlify-site.com/.netlify/your-addon-namespace
-      endpoint: "https://my-endpoint.example.com",
-      /* `config` (optional) - This can return back exactly what was received in the POST request, or include additional fields or altered values. This should also be what is returned in response to a GET request to /instances/:id */
-      config: {},
-      // `env` (optional) - Environment Keys accessible by Netlify user in build context & in functions
-      env: {
-        'YOUR_SERVICE_API_SECRET': 'value'
-      },
-      // `snippets` (optional) - JS Snippet content to inject into the calling Netlify site
-      snippets: [
-        {
-          title: 'Snippet From Demo App',
-          position: 'head',
-          html: `<script>console.log("Hello from ${logValue}")</script>`
-        }
-      ]
-    }
-    ```
-
-    - `id` A unique ID generated by you, for reference within your own API. Any string is valid for our purposes. This will be included in the headers and JWS for all API calls from Netlify. This `id` is also what is used in all subsequent `instances/${id}` update/get/delete calls to your remote API.
-    - `env`: Set Environment variable for the Netlify user to access during site build or inside of their Netlify functions context.
-    - `snippets`: Inject javascript snippets into the header or footer of the calling Netlify Site.
-
-    Though not implemented yet, we plan to include a `state` field, which will allow your service to handle async provisioning, in case it takes some amount of time to activate the new service.
+Though not implemented yet, we plan to include a `state` field, which will allow your service to handle async provisioning, in case it takes some amount of time to activate the new service.
 
 ### `PUT /instances/:id` - Updating Add-on Instance
 
@@ -187,42 +212,46 @@ netlify addons:config your-addon-namespace
 netlify addons:config your-addon-namespace --valueOne xyz --otherConfigValue abc
 ```
 
-1. **The `PUT` request from Netlify to your service `/instances/${id}` occurs**
+#### Payload from Netlify
 
-    The ID of the service instance is included in the path parameters. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
+**The `PUT` request from Netlify to your service `/instances/${id}` occurs**
 
-    The body of the update request looks like this:
+The ID of the service instance is included in the path parameters. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
 
-    ```js
+The body of the update request looks like this:
+
+```js
+{
+  config: {
+    name: 'noooooooo'
+  }
+}
+```
+
+Run your services update logic here and then return any updated values back to the Netlify site.
+
+#### Response to Netlify
+
+**Return a `200` response from your service back to Netlify**
+
+Return any updated values from the users request
+
+Here is an example response with updated `env` values and an updated `snippet`
+
+```js
+{
+  env: {
+    'YOUR_SERVICE_API_SECRET': 'updated-env-value'
+  },
+  snippets: [
     {
-      config: {
-        name: 'noooooooo'
-      }
+      title: 'Snippet From Demo App',
+      position: 'head',
+      html: `<script>console.log("Updated snippet content")</script>`
     }
-    ```
-
-    Run your services update logic here and then return any updated values back to the Netlify site.
-
-2. **Return a `200` response from your service back to Netlify**
-
-    Return any updated values from the users request
-
-    Here is an example response with updated `env` values and an updated `snippet`
-
-    ```js
-    {
-      env: {
-        'YOUR_SERVICE_API_SECRET': 'updated-env-value'
-      },
-      snippets: [
-        {
-          title: 'Snippet From Demo App',
-          position: 'head',
-          html: `<script>console.log("Updated snippet content")</script>`
-        }
-      ]
-    }
-    ```
+  ]
+}
+```
 
 ### `DELETE /instances/:id` - Deleting Add-on Instance
 
@@ -234,15 +263,25 @@ Users can remove add-ons like so:
 netlify addons:delete your-addon-namespace
 ```
 
+#### Payload from Netlify
+
 When this happens, the following occurs:
 
-1. **Netlify sends a `DELETE` request from to your service `/instances/${id}`**
+**Netlify sends a `DELETE` request from to your service `/instances/${id}`**
 
-    This request has no body but includes the `id` of the instance. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
+This request has no body but includes the `id` of the instance in the path `/instances/${id}`. This `id` was generated initially by your `POST` `/instances` implementation. (see "Create an Instance")
 
-    Run your deletion logic and optionally return data back to the client (CLI)
+Run your deletion logic and optionally return data back to Netlify.
 
-2. **Return a `204` response from your service back to Netlify to verify the deletion was successful**
+#### Response to Netlify
+
+**Return a `204` response from your service back to Netlify to verify the deletion was successful**
+
+```js
+{
+  statusCode: 204, // <-- delete must respond back with 204.
+}
+```
 
 ### `GET /instances/:id` - Getting Add-on Instance
 
@@ -252,30 +291,32 @@ Netlify users get information about your service instance like so:
 netlify addons:list
 ```
 
-To implement this endpoint
+#### Payload from Netlify
 
-1. **The `GET` request from Netlify to your service `/instances/${id}` occurs**
+**The `GET` request from Netlify to your service `/instances/${id}` occurs**.
 
-    This request has no body but includes the `id` of the instance.
+This request has no body but includes the `id` of the instance.
 
-    Run your logic to fetch details about your instance and return them back to the CLI
+In this request you would run the logic to fetch details about your instance based on the `id` from the path `/instances/${id}` and return them back to Netlify.
 
-2. **Return a `200` response from your service back to Netlify**
+#### Response to Netlify
 
-    ```
+**Return a `200` response from your service back to Netlify**
+
+```js
+{
+  env: {
+    'YOUR_SERVICE_API_SECRET': 'value'
+  },
+  snippets: [
     {
-      env: {
-        'YOUR_SERVICE_API_SECRET': 'value'
-      },
-      snippets: [
-        {
-          title: 'Snippet From Demo App',
-          position: 'head',
-          html: '<script>console.log("Hello from App")</script>'
-        }
-      ]
+      title: 'Snippet From Demo App',
+      position: 'head',
+      html: '<script>console.log("Hello from App")</script>'
     }
-    ```
+  ]
+}
+```
 
 ## Proxied URLs
 
