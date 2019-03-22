@@ -322,6 +322,30 @@ In this request you would run the logic to fetch details about your instance bas
 }
 ```
 
+## Add-on Authenication
+
+Netlify users can login to your service using the `admin_url` returned from your [`/manifest` endpoint](https://github.com/netlify/addons#get-manifest---manifest-endpoint).
+
+The `admin_url` returned from `/manifest` will be be presented to the user in the Netlify UI & via the CLI `netlify addon:auth addonName`.
+
+The admin url will have a JWT attached to it including these values:
+
+```json
+{
+  "site_id": "49360df0-2dc2-406d-9b5f-fa3beb290eed",
+  "account_id": "5902622bcf321c7359e97e52",
+  "remote_id": "98cd0990-24dc-11e9-bb37-5d971cb376a0"
+}
+```
+
+Example:
+
+```
+https://app.com/login#eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzaXRlX2lkIjoiNDkzNjBkZjAtMmRjMi00MDZkLTliNWYtZmEzYmViMjkwZWVkIiwiYWNjb3VudF9pZCI6IjU5MDI2MjJiY2YzMjFjNzM1OWU5N2U1MiIsInJlbW90ZV9pZCI6Ijk4Y2QwOTkwLTI0ZGMtMTFlOS1iYjM3LTVkOTcxY2IzNzZhMCJ9.GKMBcj6t9HML5CVtHQSL47z_gMyfSgOQj9EuvDlFpL8
+```
+
+The `remote_id` corresponds to the `id` returned during the [creation flow](https://github.com/netlify/addons#response-to-netlify-1). You can use the `remote_id` in this URL to create a new user account for the resource or assign it to an existing user account in your service.
+
 ## Proxied URLs
 
 When creating an add-on, if you return an `endpoint` with a URL to your service, a Netlify customer can send requests to
