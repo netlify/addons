@@ -1,0 +1,18 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "base.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.15.2",
+    "morgan": "^1.9.0",
+    "serverless-http": "^1.9.1"
+  }
+}

@@ -1,0 +1,4 @@
+[build]
+  command = "echo 'noOp'"
+  publish = "src"
+  functions = "functions"
