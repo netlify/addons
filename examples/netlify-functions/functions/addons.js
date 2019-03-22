@@ -1,10 +1,12 @@
+const path = require('path')
+const serverless = require('serverless-http')
 const express = require('express')
-const cors = require('cors')
+//const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const customLogger = require('./middleware/logger')
 
-// Routes
+// Routes https://github.com/netlify/addons#add-on-api
 const manifest = require('./api/manifest')
 const createAddon = require('./api/create')
 const readAddon = require('./api/read')
@@ -15,6 +17,7 @@ const deleteAddon = require('./api/delete')
 const app = express()
 const router = express.Router()
 const isDev = process.env.NODE_ENV === 'dev'
+const functionName = path.basename(__filename, '.js')
 const routerBasePath = isDev ? `/${functionName}` : `/.netlify/functions/${functionName}/`
 
 // Routes
@@ -31,7 +34,7 @@ app.use(morgan(customLogger))
 app.use(routerBasePath, router)
 
 // Apply express middlewares
-router.use(cors())
+// router.use(cors())
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({ extended: true }))
 

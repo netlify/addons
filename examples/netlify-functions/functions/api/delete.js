@@ -1,6 +1,6 @@
 
 
-module.exports = function delete(req, res) {
+module.exports = function deleteAddon(req, res) {
   const id = req.params.id
   console.log(`Delete instanceId: ${id}`)
   console.log(`Delete body`, req.body)
