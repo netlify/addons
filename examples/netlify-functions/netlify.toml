@@ -2,9 +2,3 @@
   command = "echo 'noOp'"
   publish = "src"
   functions = "functions"
-
-[[redirects]]
-  from = "/addons/*"
-  to= "/.netlify/functions/addons/:splat"
-  status = 200
-  force = true
