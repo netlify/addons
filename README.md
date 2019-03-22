@@ -32,6 +32,7 @@ A Netlify add-on is a way for Netlify users to extend their site functionality.
   * [`GET /instances/:id` - Getting Add-on Instance](#get-instancesid---getting-add-on-instance)
     + [Payload from Netlify](#payload-from-netlify-4)
     + [Response to Netlify](#response-to-netlify-4)
+- [Add-on Authenication](#add-on-authenication)
 - [Proxied URLs](#proxied-urls)
   * [Request Headers](#request-headers)
   * [Verification with JWS](#verification-with-jws)
