@@ -445,5 +445,6 @@ We have created a couple example implementations of how an add-on REST API shoul
 
 - [An express app running on Heroku](./examples/express) |  [code](https://github.com/netlify/netlify-addons/blob/master/examples/express/index.js)
 - [A REST API running on AWS Lambda + APIGateway](./examples/serverless) |  [code](https://github.com/netlify/netlify-addons/blob/master/examples/serverless/handler.js)
+- [Using Netlify Functions](./examples/netlify-functions) |  [code](https://github.com/netlify/addons/blob/master/examples/netlify-functions/functions/addons.js#L28-L32)
 
 Please let us know if you have any questions on how these work! Open an issue in this repo or ping us directly on slack.
