@@ -20,6 +20,10 @@ const isDev = process.env.NODE_ENV === 'dev'
 const functionName = path.basename(__filename, '.js')
 const routerBasePath = isDev ? `/${functionName}` : `/.netlify/functions/${functionName}/`
 
+// Load express middleware
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
 // Routes
 router.get('/manifest', manifest)
 router.post('/instances', createAddon)

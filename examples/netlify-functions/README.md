@@ -1,6 +1,6 @@
 # Netlify Provider API as via Netlify Functions
 
-This is an example implementation of the Netlify provider API to create a Netlify addon using Netlify functions to run the provisioning logic
+This is an example implementation of the Netlify provider API to create a Netlify addon using Netlify functions to run the provisioning logic.
 
 ## Install
 
@@ -24,21 +24,15 @@ npm install netlify-cli -g
 1. Create a new netlify site
 2. Link the site locally
 
-		```
 		netlify link
-		```
 
 3. Run build
 
-		```
 		npm run build
-		```
 
 4. Deploy the functions
 
-		```
 		npm run deploy
-		```
 
 ## About
 
