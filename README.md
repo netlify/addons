@@ -205,6 +205,10 @@ You will want to take this data, provision your application resources and return
 
 Though not implemented yet, we plan to include a `state` field, which will allow your service to handle async provisioning, in case it takes some amount of time to activate the new service.
 
+**Mocking POST requests**
+
+For local testing purposes you can mock the POST requests. [Read more here.](https://github.com/netlify/addons/issues/17)
+
 ### `PUT /instances/:id` - Updating Add-on Instance
 
 You can allow Netlify users to update your service instance.
