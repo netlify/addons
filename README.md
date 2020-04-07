@@ -159,7 +159,7 @@ Here is an example request body **to your management endpoint**:
       config: { name: 'woooooo' }
     },
     // If your add-on needs to trigger site rebuilds we will send a build hook
-    incoming_hook_url: 'https://api.netlify.com/build_hooks/123xyz' } }
+    incoming_hook_url: 'https://api.netlify.com/build_hooks/123xyz'
   }
 }
 ```
@@ -204,6 +204,10 @@ You will want to take this data, provision your application resources and return
 - `snippets`: Inject javascript snippets into the header or footer of the calling Netlify Site.
 
 Though not implemented yet, we plan to include a `state` field, which will allow your service to handle async provisioning, in case it takes some amount of time to activate the new service.
+
+**Mocking POST requests**
+
+For local testing purposes you can mock the POST requests. [Read more here.](https://github.com/netlify/addons/issues/17)
 
 ### `PUT /instances/:id` - Updating Add-on Instance
 
