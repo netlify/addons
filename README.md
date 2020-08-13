@@ -416,7 +416,7 @@ Netlify provides a built-in Identity service (which is actually a microservice a
 
 Our current plan is to create a developer panel where new partners can register a new add-on in our UI. It will require an application title, slug, description, icon, and an endpoint for the app's management API.
 
-For now, you can register your add-on namespace/endpoint by [filling out this form](https://cli.netlify.com/register-addon) and we will get you set up in Netlify's add-on marketplace.
+For now, you can email partners@netlify.com for assistance.
 
 When we register your add-on, we’ll generate an add-on secret that is unique to your service. All requests from Netlify to your add-on’s management API will contain an `X-Nf-Sign` authorization header. You can verify request are coming from Netlify by verifying the `X-Nf-Sign` header against your add-on secret.
 
