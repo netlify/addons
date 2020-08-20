@@ -9,6 +9,9 @@ A Netlify add-on is a way for Netlify users to extend their site functionality.
 - Setup `env` variables in Netlify's build context for users Automatically
 - ...
 
+> **Tip:** 
+> Before developing a Netlify add-on, consider creating a [Build Plugin](https://docs.netlify.com/configure-builds/build-plugins) for your use case instead. Build Plugins are a newer and more streamlined way to integrate with Netlify. They’re faster to develop, and users can install them directly from the Netlify UI.
+
 ## Table of Contents
 <!-- AUTO-GENERATED-CONTENT:START (TOC:collapse=true&collapseText=Click to expand) -->
 <details>
