@@ -13,7 +13,7 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "serverless": "^1.67.1",
+    "serverless": "^3.30.1",
     "serverless-domain-manager": "^3.3.1"
   }
 }
